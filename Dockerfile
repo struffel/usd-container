@@ -1,31 +1,32 @@
 # syntax=docker/dockerfile:1
 
-########## DOWNLOAD STAGE
+FROM ubuntu:20.04 as base
 
-FROM ubuntu:20.04 as download
+########## PREPARATION STAGE
+
+FROM base as prepare
 
 ENV DEBIAN_FRONTEND=noninteractive
-ARG USD_VERSION
-
 RUN apt-get update && apt-get install -y \
     unzip \
-    wget 
+    wget \
+    build-essential \
+    cmake
 
 RUN mkdir "/usd-setup"
 RUN mkdir "/usd-artifacts"
 
+ARG USD_VERSION
 RUN wget -q -O /usd-setup/usd-source.zip https://github.com/PixarAnimationStudios/USD/archive/refs/tags/v$USD_VERSION.zip
 RUN unzip -q /usd-setup/usd-source.zip -d /usd-setup
 
 ########## BUILD STAGES
 
-FROM download as build-default
+FROM prepare as build-default
 
 RUN  apt-get install -y \
-    build-essential \
-    cmake \
     python3-dev \
-    libgl-dev 
+    glew-utils
 
 RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-tests \
@@ -50,25 +51,22 @@ RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
 
 RUN rm -rf /usd-artifacts/build && rm -rf /usd-artifacts/src
 
-FROM download as build-usdview
+FROM prepare as build-usdview
 
 ENV DISPLAY=host.docker.internal:0.0
 
 RUN  apt-get install -y \
-    build-essential \
-    cmake \
     python3-dev \
     python3-pip \
-    libgl-dev \
-    libglib2.0-0 \
+    glew-utils \
     qt5-default
 
 RUN pip install PyOpenGL PySide2
 
 RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-tests \
-    --no-examples \
-    --no-tutorials \
+    --examples \
+    --tutorials \
     --tools \
     --no-docs \
     --python \
@@ -88,15 +86,15 @@ RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
 
 RUN rm -rf /usd-artifacts/build && rm -rf /usd-artifacts/src
 
-########## FINALIZATION STAGE
+########## FINALIZATION STAGES
 
-FROM ubuntu:20.04 as default
+FROM base as default
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
     python3-dev \
-    libgl-dev
+    glew-utils
 
 RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 
@@ -105,17 +103,16 @@ ENV PYTHONPATH="/opt/PixarAnimationStudios/USD/lib/python:$PYTHONPATH"
 
 COPY --from=build-default /usd-artifacts /opt/PixarAnimationStudios/USD/
 
-CMD /bin/bash
+CMD ["/bin/bash"]
 
-FROM ubuntu:20.04 as usdview
+FROM base as usdview
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=host.docker.internal:0.0
 
 RUN apt-get update && apt-get install -y \
     python3-pip \
-    libgl-dev \
-    libglib2.0-0 \
+    glew-utils \
     qt5-default
 
 RUN pip install PyOpenGL PySide2
@@ -127,4 +124,4 @@ ENV PYTHONPATH="/opt/PixarAnimationStudios/USD/lib/python:$PYTHONPATH"
 
 COPY --from=build-usdview /usd-artifacts /opt/PixarAnimationStudios/USD/
 
-CMD /bin/bash
+CMD ["usdview","/opt/PixarAnimationStudios/USD/share/usd/tutorials/traversingStage/HelloWorld.usda"]
