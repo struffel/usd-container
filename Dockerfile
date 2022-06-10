@@ -1,9 +1,8 @@
 # syntax=docker/dockerfile:1
 
+########## PREPARATION STAGES
+
 FROM ubuntu:20.04 as base
-
-########## PREPARATION STAGE
-
 FROM base as prepare
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -14,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     cmake
 
 RUN mkdir "/usd-setup"
-RUN mkdir "/usd-artifacts"
+RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 
 ARG USD_VERSION
 RUN wget -q -O /usd-setup/usd-source.zip https://github.com/PixarAnimationStudios/USD/archive/refs/tags/v$USD_VERSION.zip
@@ -47,9 +46,9 @@ RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-hdf5 \
     --no-draco \
     --no-materialx \
-    /usd-artifacts
+    /opt/PixarAnimationStudios/USD
 
-RUN rm -rf /usd-artifacts/build && rm -rf /usd-artifacts/src
+RUN rm -rf /opt/PixarAnimationStudios/USD/build && rm -rf /opt/PixarAnimationStudios/USD/src
 
 FROM prepare as build-usdview
 
@@ -61,7 +60,7 @@ RUN  apt-get install -y \
     glew-utils \
     qt5-default
 
-RUN pip install PyOpenGL PySide2
+RUN pip install PyOpenGL PySide2 numpy
 
 RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-tests \
@@ -82,9 +81,9 @@ RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-hdf5 \
     --no-draco \
     --no-materialx \
-    /usd-artifacts
+    /opt/PixarAnimationStudios/USD
 
-RUN rm -rf /usd-artifacts/build && rm -rf /usd-artifacts/src
+RUN rm -rf /opt/PixarAnimationStudios/USD/build && rm -rf /opt/PixarAnimationStudios/USD/src
 
 ########## FINALIZATION STAGES
 
@@ -101,7 +100,7 @@ RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 ENV PATH="/opt/PixarAnimationStudios/USD/bin:$PATH"
 ENV PYTHONPATH="/opt/PixarAnimationStudios/USD/lib/python:$PYTHONPATH"
 
-COPY --from=build-default /usd-artifacts /opt/PixarAnimationStudios/USD/
+COPY --from=build-default /opt/PixarAnimationStudios/USD /opt/PixarAnimationStudios/USD
 
 CMD ["/bin/bash"]
 
@@ -122,6 +121,6 @@ RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 ENV PATH="/opt/PixarAnimationStudios/USD/bin:$PATH"
 ENV PYTHONPATH="/opt/PixarAnimationStudios/USD/lib/python:$PYTHONPATH"
 
-COPY --from=build-usdview /usd-artifacts /opt/PixarAnimationStudios/USD/
+COPY --from=build-usdview /opt/PixarAnimationStudios/USD /opt/PixarAnimationStudios/USD
 
 CMD ["usdview","/opt/PixarAnimationStudios/USD/share/usd/tutorials/traversingStage/HelloWorld.usda"]
