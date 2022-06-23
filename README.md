@@ -1,7 +1,8 @@
 # USD-container
 This is a containerized version of the [Universal Scene Description](https://graphics.pixar.com/usd/) toolset developed by Pixar.
 Official sources for USD do not offer any compiled binaries which makes this container image a quick and easy to use alternative to building the tools yourself.
-It can also be used for automating workflows. The versioning of this image follows the versioning of USD itself.
+It can also be used for automating workflows. 
+The image is based on `Ubuntu:20.04` image and the versioning follows the versioning of USD itself.
 
 # Using this image
 This image is publicly available on the [Docker Hub](https://hub.docker.com/r/struffel/pixar-usd) from where it can be pulled using the `docker pull` command:
@@ -16,6 +17,16 @@ docker run -it --rm struffel/pixar-usd:22.03
 ```
 Documentation on the available tools can be found on [Pixar's website](https://graphics.pixar.com/usd/release/toolset.html).
 
+# Flavors
+This image comes in different flavors, indicated by the the suffix behind their tag, for example `22.03-usdview`.
+The different flavors come with different configurations of USD:
+
+| Suffix  | tools | python | examples | tutorials | usdview (experimental) |
+| ---  | --- | --- | --- | --- | --- |
+| (none)  | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
+| `-python`  | ❌ | ✔️ | ❌ | ❌ | ❌ |
+| `-tools`  | ✔️ | ❌ | ❌ | ❌ | ❌ |
+| `-usdview`  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 
 # USDview
 The default version of this image does not contain the graphical USDview application.
@@ -25,7 +36,7 @@ More examples and documentation regarding USDview will follow at a later point.
 
 # Building the image yourself
 
-The Dockerfile uses the [multi-stage-build](https://docs.docker.com/develop/develop-images/multistage-build/) feature to allow building several versions of the image based on the official `Ubuntu:20.04` image.
+The Dockerfile uses the [multi-stage-build](https://docs.docker.com/develop/develop-images/multistage-build/) feature to allow building the different flavors.
 Different versions can be passed as build targets. In addition, the `USD_VERSION` build argument must be set as well.
 Here are a few examples for possible build commands:
 ```
