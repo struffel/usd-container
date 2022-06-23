@@ -21,7 +21,7 @@ Documentation on the available tools can be found on [Pixar's website](https://g
 This image comes in different flavors, indicated by the the suffix behind their tag, for example `22.03-usdview`.
 The different flavors come with different configurations of USD:
 
-| Suffix  | tools | python | examples | tutorials | usdview (experimental) | text editor (for `usdedit`) |
+| Suffix  | tools | python | examples | tutorials | usdview (experimental/limited) | text editor (for `usdedit`) |
 | ---  | --- | --- | --- | --- | --- | --- |
 | (none) | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | nano |
 | `-python`  | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ |
