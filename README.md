@@ -46,3 +46,5 @@ docker build --build-arg USD_VERSION=21.11 --target=default -t usd:21.11 .
 # Builds and image with the USD tools, python3, example/tutorial and the usdview application files.
 docker build --build-arg USD_VERSION=22.05a --target=usdview -t usd:22.05a-usdview .
 ```
+# Credits/Licenses
+[Pixar USD](https://github.com/PixarAnimationStudios/USD/blob/release/LICENSE.txt)
