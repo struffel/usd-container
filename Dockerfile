@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1
 
+FROM ubuntu:20.04 as base
+
 ########## PREPARATION STAGES
 
-FROM ubuntu:20.04 as base
 FROM base as prepare
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,8 +30,8 @@ RUN  apt-get install -y \
 
 RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-tests \
-    --no-examples \
-    --no-tutorials \
+    --examples \
+    --tutorials \
     --tools \
     --no-docs \
     --python \
