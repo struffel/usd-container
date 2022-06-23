@@ -21,12 +21,12 @@ Documentation on the available tools can be found on [Pixar's website](https://g
 This image comes in different flavors, indicated by the the suffix behind their tag, for example `22.03-usdview`.
 The different flavors come with different configurations of USD:
 
-| Suffix  | tools | python | examples | tutorials | usdview (experimental) |
-| ---  | --- | --- | --- | --- | --- |
-| (none)  | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
-| `-python`  | ❌ | ✔️ | ❌ | ❌ | ❌ |
-| `-tools`  | ✔️ | ❌ | ❌ | ❌ | ❌ |
-| `-usdview`  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Suffix  | tools | python | examples | tutorials | usdview (experimental) | text editor (for `usdedit`) |
+| ---  | --- | --- | --- | --- | --- | --- |
+| (none) | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | nano |
+| `-python`  | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ |
+| `-tools`  | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| `-usdview`  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | gedit |
 
 # USDview
 The default version of this image does not contain the graphical USDview application.
