@@ -33,6 +33,7 @@ The default version of this image does not contain the graphical USDview applica
 However, there is a separate (experimental) tag with the `-usdview` suffix which does launching the USDview utility using the `usdview` command.
 This may require the use of an external X11 client like [vcxsrv](https://sourceforge.net/projects/vcxsrv/).
 More examples and documentation regarding USDview will follow at a later point.
+![USDview running on Windows 10 via Docker Desktop and vcxsrv.](https://user-images.githubusercontent.com/31403260/175355715-c4e0eda3-67b7-4983-a836-e55ae35157f6.png)
 
 # Building the image yourself
 
