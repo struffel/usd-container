@@ -86,9 +86,62 @@ RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
 
 RUN rm -rf /opt/PixarAnimationStudios/USD/build && rm -rf /opt/PixarAnimationStudios/USD/src
 
+FROM prepare as build-python
+
+RUN  apt-get install -y \
+    python3-dev \
+    glew-utils 
+
+RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
+    --no-tests \
+    --no-examples \
+    --no-tutorials \
+    --no-tools \
+    --no-docs \
+    --python \
+    --no-debug-python \
+    --no-imaging \
+    --no-ptex \
+    --no-openvdb \
+    --no-usdview \
+    --no-embree \
+    --no-prman \
+    --no-openimageio \
+    --no-alembic \
+    --no-hdf5 \
+    --no-draco \
+    --no-materialx \
+    /opt/PixarAnimationStudios/USD
+
+RUN rm -rf /opt/PixarAnimationStudios/USD/build && rm -rf /opt/PixarAnimationStudios/USD/src
+
 ########## FINALIZATION STAGES
 
-FROM base as default
+FROM base as usdview
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DISPLAY=host.docker.internal:0.0
+
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    glew-utils \
+    qt5-default \
+    gedit
+
+RUN pip install PyOpenGL PySide2 numpy
+
+RUN mkdir -p "/opt/PixarAnimationStudios/USD"
+
+ENV EDITOR="gedit"
+ENV PATH="/opt/PixarAnimationStudios/USD/bin:$PATH"
+ENV PYTHONPATH="/opt/PixarAnimationStudios/USD/lib/python:$PYTHONPATH"
+
+COPY --from=build-usdview /opt/PixarAnimationStudios/USD /opt/PixarAnimationStudios/USD
+WORKDIR "/home"
+
+CMD ["usdview","/opt/PixarAnimationStudios/USD/share/usd/tutorials/traversingStage/HelloWorld.usda"]
+
+FROM base as python
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -101,27 +154,27 @@ RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 ENV PATH="/opt/PixarAnimationStudios/USD/bin:$PATH"
 ENV PYTHONPATH="/opt/PixarAnimationStudios/USD/lib/python:$PYTHONPATH"
 
-COPY --from=build-default /opt/PixarAnimationStudios/USD /opt/PixarAnimationStudios/USD
+COPY --from=build-python /opt/PixarAnimationStudios/USD /opt/PixarAnimationStudios/USD
+WORKDIR "/home"
 
-CMD ["/bin/bash"]
+CMD ["python3"]
 
-FROM base as usdview
+FROM base as default
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DISPLAY=host.docker.internal:0.0
 
 RUN apt-get update && apt-get install -y \
-    python3-pip \
+    python3-dev \
     glew-utils \
-    qt5-default
-
-RUN pip install PyOpenGL PySide2
+    nano
 
 RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 
+ENV EDITOR="nano"
 ENV PATH="/opt/PixarAnimationStudios/USD/bin:$PATH"
 ENV PYTHONPATH="/opt/PixarAnimationStudios/USD/lib/python:$PYTHONPATH"
 
-COPY --from=build-usdview /opt/PixarAnimationStudios/USD /opt/PixarAnimationStudios/USD
+COPY --from=build-default /opt/PixarAnimationStudios/USD /opt/PixarAnimationStudios/USD
+WORKDIR "/home"
 
-CMD ["usdview","/opt/PixarAnimationStudios/USD/share/usd/tutorials/traversingStage/HelloWorld.usda"]
+CMD ["/bin/bash"]
