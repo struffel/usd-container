@@ -37,7 +37,7 @@ More examples and documentation regarding USDview will follow at a later point.
 # Building the image yourself
 
 The Dockerfile uses the [multi-stage-build](https://docs.docker.com/develop/develop-images/multistage-build/) feature to allow building the different flavors.
-Different versions can be passed as build targets. In addition, the `USD_VERSION` build argument must be set as well.
+Different flavors can be passed as build targets (`default`/`python`/`usdview`). In addition, the `USD_VERSION` build argument must be set as well.
 Here are a few examples for possible build commands:
 ```
 # Builds and image with the USD tools, python3 and example/tutorial files.
