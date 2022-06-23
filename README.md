@@ -21,23 +21,23 @@ Documentation on the available tools can be found on [Pixar's website](https://g
 This image comes in different flavors, indicated by the the suffix behind their tag, for example `22.03-usdview`.
 The different flavors come with different configurations of USD:
 
-| Suffix  | tools | python | examples | tutorials | usdview (experimental) |
-| ---  | --- | --- | --- | --- | --- |
-| (none)  | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
-| `-python`  | ❌ | ✔️ | ❌ | ❌ | ❌ |
-| `-tools`  | ✔️ | ❌ | ❌ | ❌ | ❌ |
-| `-usdview`  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Suffix  | tools | python | examples | tutorials | usdview (experimental) | text editor (for `usdedit`) |
+| ---  | --- | --- | --- | --- | --- | --- |
+| (none) | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | nano |
+| `-python`  | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ |
+| `-usdview`  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | gedit |
 
 # USDview
 The default version of this image does not contain the graphical USDview application.
 However, there is a separate (experimental) tag with the `-usdview` suffix which does launching the USDview utility using the `usdview` command.
 This may require the use of an external X11 client like [vcxsrv](https://sourceforge.net/projects/vcxsrv/).
 More examples and documentation regarding USDview will follow at a later point.
+![USDview running on Windows 10 via Docker Desktop and vcxsrv.](https://user-images.githubusercontent.com/31403260/175355715-c4e0eda3-67b7-4983-a836-e55ae35157f6.png)
 
 # Building the image yourself
 
 The Dockerfile uses the [multi-stage-build](https://docs.docker.com/develop/develop-images/multistage-build/) feature to allow building the different flavors.
-Different versions can be passed as build targets. In addition, the `USD_VERSION` build argument must be set as well.
+Different flavors can be passed as build targets (`default`/`python`/`usdview`). In addition, the `USD_VERSION` build argument must be set as well.
 Here are a few examples for possible build commands:
 ```
 # Builds and image with the USD tools, python3 and example/tutorial files.
