@@ -29,8 +29,10 @@ RUN unzip -q /usd-setup/usd-source.zip -d /usd-setup
 FROM prepare-build as build-default
 
 RUN  apt-get install -y \
-    python3-dev \
-    glew-utils
+    python3-dev=$APT_PYTHON_VERSION \
+    libc6 \
+    libgl1 \
+    libglew2.1
 
 RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-tests \
@@ -60,9 +62,12 @@ FROM prepare-build as build-usdview
 ENV DISPLAY=host.docker.internal:0.0
 
 RUN  apt-get install -y \
-    python3-dev \
-    python3-pip \
-    glew-utils \
+    python3-dev=$APT_PYTHON_VERSION \
+    python3-pip\
+    libc6 \
+    libgl1 \
+    libglew2.1 \
+    libx11-6 \
     qt5-default
 
 RUN pip install PyOpenGL PySide2 numpy
@@ -93,8 +98,10 @@ RUN rm -rf /opt/PixarAnimationStudios/USD/build && rm -rf /opt/PixarAnimationStu
 FROM prepare-build as build-python
 
 RUN  apt-get install -y \
-    python3-dev \
-    glew-utils 
+    python3-dev=$APT_PYTHON_VERSION \
+    libc6 \
+    libgl1 \
+    libglew2.1
 
 RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-tests \
@@ -125,7 +132,10 @@ FROM base as usdview
 
 RUN apt-get update && apt-get install -y \
     python3-pip \
-    glew-utils \
+    libc6 \
+    libgl1 \
+    libglew2.1 \
+    libx11-6 \
     qt5-default \
     gedit
 
@@ -145,8 +155,10 @@ CMD ["usdview","/opt/PixarAnimationStudios/USD/share/usd/tutorials/traversingSta
 FROM base as python
 
 RUN apt-get update && apt-get install -y \
-    python3-dev \
-    glew-utils
+    python3-dev=$APT_PYTHON_VERSION \
+    libc6 \
+    libgl1 \
+    libglew2.1
 
 RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 
@@ -161,8 +173,10 @@ CMD ["python3"]
 FROM base as default
 
 RUN apt-get update && apt-get install -y \
-    python3-dev \
-    glew-utils \
+    python3-dev=$APT_PYTHON_VERSION \
+    libc6 \
+    libgl1 \
+    libglew2.1 \
     nano
 
 RUN mkdir -p "/opt/PixarAnimationStudios/USD"
