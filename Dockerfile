@@ -10,7 +10,7 @@ ENV DISPLAY=host.docker.internal:0.0
 
 ########## PREPARATION STAGES
 
-FROM base as prepare
+FROM base as prepare-build
 
 RUN apt-get update && apt-get install -y \
     unzip \
@@ -26,7 +26,7 @@ RUN unzip -q /usd-setup/usd-source.zip -d /usd-setup
 
 ########## BUILD STAGES
 
-FROM prepare as build-default
+FROM prepare-build as build-default
 
 RUN  apt-get install -y \
     python3-dev \
@@ -55,7 +55,7 @@ RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
 
 RUN rm -rf /opt/PixarAnimationStudios/USD/build && rm -rf /opt/PixarAnimationStudios/USD/src
 
-FROM prepare as build-usdview
+FROM prepare-build as build-usdview
 
 ENV DISPLAY=host.docker.internal:0.0
 
@@ -90,7 +90,7 @@ RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
 
 RUN rm -rf /opt/PixarAnimationStudios/USD/build && rm -rf /opt/PixarAnimationStudios/USD/src
 
-FROM prepare as build-python
+FROM prepare-build as build-python
 
 RUN  apt-get install -y \
     python3-dev \
