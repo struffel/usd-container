@@ -25,7 +25,7 @@ The different flavors come with different configurations of USD:
 | ---  | --- | --- | --- | --- | --- | --- |
 | (none) | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | nano |
 | `-python`  | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ |
-| `-usdview`  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | gedit |
+| `-usdview` (experimental) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | gedit |
 
 # USDview
 The default version of this image does not contain the graphical USDview application.
