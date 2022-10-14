@@ -70,7 +70,7 @@ RUN  apt-get install -y \
     libx11-6 \
     qt5-default
 
-RUN pip install PyOpenGL PySide2 numpy
+RUN pip install PyOpenGL PySide6 numpy
 
 RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-tests \
@@ -139,7 +139,7 @@ RUN apt-get update && apt-get install -y \
     qt5-default \
     gedit
 
-RUN pip install PyOpenGL PySide2 numpy
+RUN pip install PyOpenGL PySide6 numpy
 
 RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 
