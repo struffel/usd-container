@@ -2,11 +2,16 @@
 
 FROM ubuntu:20.04 as base
 
+ARG USD_VERSION
+ARG APT_PYTHON_VERSION=3.8.*
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DISPLAY=host.docker.internal:0.0
+
 ########## PREPARATION STAGES
 
 FROM base as prepare
 
-ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     unzip \
     wget \
@@ -16,7 +21,6 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir "/usd-setup"
 RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 
-ARG USD_VERSION
 RUN wget -q -O /usd-setup/usd-source.zip https://github.com/PixarAnimationStudios/USD/archive/refs/tags/v$USD_VERSION.zip
 RUN unzip -q /usd-setup/usd-source.zip -d /usd-setup
 
@@ -119,9 +123,6 @@ RUN rm -rf /opt/PixarAnimationStudios/USD/build && rm -rf /opt/PixarAnimationStu
 
 FROM base as usdview
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV DISPLAY=host.docker.internal:0.0
-
 RUN apt-get update && apt-get install -y \
     python3-pip \
     glew-utils \
@@ -143,8 +144,6 @@ CMD ["usdview","/opt/PixarAnimationStudios/USD/share/usd/tutorials/traversingSta
 
 FROM base as python
 
-ENV DEBIAN_FRONTEND=noninteractive
-
 RUN apt-get update && apt-get install -y \
     python3-dev \
     glew-utils
@@ -160,8 +159,6 @@ WORKDIR "/home"
 CMD ["python3"]
 
 FROM base as default
-
-ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
     python3-dev \
