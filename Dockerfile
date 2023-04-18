@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
 
-FROM ubuntu:20.04 as base
+FROM ubuntu:22.10 as base
 
 ARG USD_VERSION
-ARG APT_PYTHON_VERSION=3.8.*
+ARG APT_PYTHON_VERSION=3.10.*
+ARG APT_CMAKE_VERSION=3.24.*
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=host.docker.internal:0.0
@@ -16,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     wget \
     build-essential \
-    cmake
+    cmake=$APT_CMAKE_VERSION
 
 RUN mkdir "/usd-setup"
 RUN mkdir -p "/opt/PixarAnimationStudios/USD"
@@ -32,7 +33,7 @@ RUN  apt-get install -y \
     python3-dev=$APT_PYTHON_VERSION \
     libc6 \
     libgl1 \
-    libglew2.1
+    libglew2.2
 
 RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-tests \
@@ -66,9 +67,10 @@ RUN  apt-get install -y \
     python3-pip\
     libc6 \
     libgl1 \
-    libglew2.1 \
+    libglew2.2 \
     libx11-6 \
-    qt5-default
+    qtchooser \
+	qtbase5-dev
 
 RUN pip install PyOpenGL PySide6 numpy
 
@@ -101,7 +103,7 @@ RUN  apt-get install -y \
     python3-dev=$APT_PYTHON_VERSION \
     libc6 \
     libgl1 \
-    libglew2.1
+    libglew2.2
 
 RUN python3 /usd-setup/USD-$USD_VERSION/build_scripts/build_usd.py \
     --no-tests \
@@ -134,9 +136,10 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     libc6 \
     libgl1 \
-    libglew2.1 \
+    libglew2.2 \
     libx11-6 \
-    qt5-default \
+    qtbase5-dev \
+	qtchooser \
     gedit
 
 RUN pip install PyOpenGL PySide6 numpy
@@ -158,7 +161,7 @@ RUN apt-get update && apt-get install -y \
     python3-dev=$APT_PYTHON_VERSION \
     libc6 \
     libgl1 \
-    libglew2.1
+    libglew2.2
 
 RUN mkdir -p "/opt/PixarAnimationStudios/USD"
 
@@ -176,7 +179,7 @@ RUN apt-get update && apt-get install -y \
     python3-dev=$APT_PYTHON_VERSION \
     libc6 \
     libgl1 \
-    libglew2.1 \
+    libglew2.2 \
     nano
 
 RUN mkdir -p "/opt/PixarAnimationStudios/USD"
